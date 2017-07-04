@@ -79,7 +79,7 @@ System.out.println("B started");
                         
                     }
                     System.out.println("B wait");
-                    notifyAllExample.wait();
+                    notifyAllExample.wait();// It will wait untill it is Notified by any other thread
                     System.out.println("Got Access Thread B");
                 }
 
