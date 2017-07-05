@@ -14,65 +14,32 @@ public class WorkerThread implements Runnable {
   
     private String command;
     private static List<String> entryLst = new ArrayList<>();
-private static final Object lock = new Object();    
     public WorkerThread(String s){
         this.command=s;
     }
 
     @Override
     public void run() {
-//        System.out.println(Thread.currentThread().getName()+" Start. Command = "+command);
             processCommand();	
-//        System.out.println(Thread.currentThread().getName()+" End.");
     }
 
     private void processCommand() {
         try {
         	final File folder = new File("C:\\Users\\sony\\Desktop\\multiThread\\src");
-        	FileReader  fr = null;
-        	FileWriter fw= null;
         	for (final File fileEntry : folder.listFiles()) {
-        		/* if (fileEntry.isFile()) {
-                	if(!entryLst.contains(fileEntry.getName())){
-                		System.out.println(Thread.currentThread().getName()+" Start. File Archiving  = "+fileEntry.getName());
-                		archiveFile(fileEntry.getName());
-                		entryLst.add(fileEntry.getName());
-                	}
-                	}
-                	*/
         		boolean startReading = false;
-        		synchronized (lock) {
-                	/*try{
-                		fr = new FileReader("C:\\Users\\sony\\Desktop\\multiThread\\ctlfiles\\"+fileEntry.getName()+".CTL");
-                		
-                	}catch (FileNotFoundException e) {
-                			try {
-								fw = new FileWriter("C:\\Users\\sony\\Desktop\\multiThread\\ctlfiles\\"+fileEntry.getName()+".CTL");
-							} catch (IOException e1) {
-								//
-							}
-                			startReading= true;
-                	}*/
-        			
+        		synchronized (entryLst) {
         			if(!entryLst.contains(fileEntry.getName())){
-//                		System.out.println(Thread.currentThread().getName()+" Start. File Archiving  = "+fileEntry.getName());
-//                		archiveFile(fileEntry.getName());
                 		entryLst.add(fileEntry.getName());
                 		startReading=true;
                 	}
-        			
         		}
                 	if(startReading){
                 		System.out.println(Thread.currentThread().getName()+" Start. File Archiving  = "+fileEntry.getName());
                 		archiveFile(fileEntry.getName());
                 		  Thread.sleep(2000);
                 	}
-                	
-//                } else if (entryLst.size()== folder.listFiles().length) {
-//                    System.out.println("All files read complete");
-//                }
             }
-        	
           
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -98,7 +65,6 @@ private static final Object lock = new Object();
 				bw.write(sCurrentLine);
 				bw.write("\\\n");
 			}
-//			System.out.println("Archived file name :"+name);
 			System.out.println(Thread.currentThread().getName()+" End. File Archiving  = "+name);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
